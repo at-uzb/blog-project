@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="/" class="navbar-logo">MyBlog</a>
+    <ul class="navbar-links">
+
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'posts:post-create' %}">Create</a></li>
+        {% if user.is_admin %}
+        <li><a href="{% url 'unapproved-posts' %}">Approve posts</a></li>
+        {% endif %}
+        <li class="username">{{ user.username }}</li>
+        <li><form method="post" action="{% url 'logout' %}" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="nav-link-button">Logout</button>
+        </form>
+        </li>
+
+
+        {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

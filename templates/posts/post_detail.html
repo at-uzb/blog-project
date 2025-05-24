@@ -1,0 +1,30 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    {% if post.image %}
+    <img src="{{ post.image.url }}" width="400">
+    {% endif %}
+    <p>Category: {{ post.category }}</p>
+    <p>Tags: {% for tag in post.tags.all %} #{{ tag.name }} {% endfor %}</p>
+
+    <hr>
+    <h4>Comments</h4>
+    {% for comment in comments %}
+    <p><b>{{ comment.author }}</b>: {{ comment.content }}</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="p-button">Add Comment</button>
+    </form>
+    {% else %}
+    <p><a href="/login/">Log in</a> to comment.</p>
+    {% endif %}
+
+    {% endblock %}
+

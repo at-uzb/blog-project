@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}My Blog{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/posts.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+<body>
+
+  {% include 'other/navbar.html' %}
+
+  <div class="container">
+  {% block content %}
+    <div class="filter-form">
+      <form method="get">
+        <select name="filter" id="filter" onchange="this.form.submit()">
+          <option value="latest" {% if request.GET.filter == "latest" %}selected{% endif %}>🆕 Latest</option>
+          <option value="most_viewed" {% if request.GET.filter == "most_viewed" %}selected{% endif %}>📈 Most Viewed</option>
+          <option value="weekly" {% if request.GET.filter == "weekly" %}selected{% endif %}>🗓️ Weekly Digest</option>
+          <option value="monthly" {% if request.GET.filter == "monthly" %}selected{% endif %}>📅 Monthly Digest</option>
+          <option value="most_recommended" {% if request.GET.filter == "most_recommended" %}selected{% endif %}>⭐ Most Recommended</option>
+        </select>
+      </form>
+    </div>
+    {% for post in posts %}
+      <div class="post-card">
+        <div class="post-title">
+          <a href="{% url 'posts:post-detail' post.pk %}">{{ post.title }}</a>
+        </div>
+        <div class="post-snippet">
+          {{ post.content|truncatewords:20 }}
+        </div>
+        <div class="post-meta">
+          <span>👁️ {{ post.view_count }} views</span>
+          <a href="{% url 'posts:post-detail' post.pk %}#comments" class="comment-link">
+            💬 {{ post.comments.count }} comments
+          </a>
+          <form method="post" action="{% url 'posts:like-post' post.pk %}" class="like-form">
+            {% csrf_token %}
+            <button type="submit" class="like-button"> {{post.likes.count}} likes</button>
+
+          </form>
+          <div class="date">{{ post.created_at|date:"j F Y" }}</div>
+        </div>
+        <hr>
+      </div>
+    {% empty %}
+      <p>No posts yet.</p>
+    {% endfor %}
+  {% endblock %}
+  </div>
+
+</body>
+</html>

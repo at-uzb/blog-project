@@ -1,0 +1,16 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+  {% for post in posts %}
+    <div>
+      <h3><a href="{% url 'posts:post-detail' post.pk %}">{{ post.title }}</a></h3>
+      <p>{{ post.content|truncatewords:20 }}</p>
+    </div>
+  {% empty %}
+    <p>No posts yet.</p>
+  {% endfor %}
+
+{% endblock %}
+
+
